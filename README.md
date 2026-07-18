@@ -12,7 +12,7 @@ A dual-source ETL pipeline that ingests historical CSV bulk data and a live dail
 
 Two ingestion paths run independently, get validated against the same schema-quality rules, and merge into a single fact table:
 
-- **CSV** — [Online Retail II (UCI)](https://archive.ics.uci.org/dataset/502/online+retail+ii), ~1.07M UK e-commerce transactions, loaded and validated as a historical bulk batch.
+- **CSV** — [Online Retail II (UCI)](https://www.kaggle.com/datasets/mashlyn/online-retail-ii-uci), ~1.07M UK e-commerce transactions, loaded and validated as a historical bulk batch.
 - **API** — [DummyJSON `/carts`](https://dummyjson.com/carts), pulled daily as a live incremental feed, normalized into the same schema shape as the CSV source.
 
 Both paths run through the same PySpark validation logic — every row is bucketed into `valid`, `returns`, or `quarantine`. Nothing is silently dropped.
