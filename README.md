@@ -12,7 +12,7 @@ A dual-source ETL pipeline that ingests historical CSV bulk data and a live dail
 
 Two ingestion paths run independently, get validated against the same schema-quality rules, and merge into a single fact table:
 
-- **CSV** — [Online Retail II (UCI)](https://www.kaggle.com/datasets/mashlyn/online-retail-ii-uci), ~1.07M UK e-commerce transactions, loaded and validated as a historical bulk batch.
+- **CSV** — [Online Retail II (UCI)](https://archive.ics.uci.org/dataset/502/online+retail+ii), ~1.07M UK e-commerce transactions, loaded and validated as a historical bulk batch.
 - **API** — [DummyJSON `/carts`](https://dummyjson.com/carts), pulled daily as a live incremental feed, normalized into the same schema shape as the CSV source.
 
 Both paths run through the same PySpark validation logic — every row is bucketed into `valid`, `returns`, or `quarantine`. Nothing is silently dropped.
@@ -58,6 +58,30 @@ Four dimensions (`dim_date`, `dim_product`, `dim_customer`, `dim_country`), one 
 ## Orchestration
 
 <img src="docs/assets/airflow-dag.png" alt="Airflow DAG graph — all 4 tasks succeeded" width="700">
+
+## AWS deployment (proof of concept)
+
+Ran once end-to-end on real AWS infrastructure to validate the architecture beyond local Docker Compose — EC2 (`t3.medium`) running the same Airflow/Docker stack, RDS PostgreSQL (`db.t4g.micro`) as the warehouse, S3 bucket provisioned for future raw-data landing, all within a single VPC with private security-group-based networking (RDS has no public access).
+
+| | |
+|---|---|
+| <img src="aws/ec2-instance.png" width="380"> | <img src="aws/rds-instance.png" width="380"> |
+| EC2 instance running the Airflow stack | RDS PostgreSQL warehouse, Available |
+| <img src="aws/s3-bucket.png" width="380"> | <img src="aws/airflow-dag-run.png" width="380"> |
+| S3 bucket (raw data landing, provisioned) | DAG running on the public EC2 URL |
+
+Row counts verified directly against RDS after the run — matches the local Docker Compose results exactly:
+
+<img src="aws/row-count-verification.png" width="500">
+
+```
+ source | count
+--------+--------
+ api    |    800
+ csv    | 805620
+```
+
+**Scope note:** this was a deliberate one-time run, not a persistently hosted deployment — EC2 and RDS were stopped afterward to avoid ongoing cost. The S3 bucket exists and IAM/networking are correctly wired, but the pipeline doesn't read/write S3 yet (`ingestion/storage_backend.py`'s `S3Backend` remains scaffolded — see Known Limitations). Treat this as validated infrastructure-as-a-pattern, not a running production system.
 
 ## Getting started
 

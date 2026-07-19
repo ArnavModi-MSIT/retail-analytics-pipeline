@@ -7,3 +7,4 @@ __pycache__/
 *.pyo
 .ruff_cache/
 .pytest_cache/
+retail-pipeline-key.pem
