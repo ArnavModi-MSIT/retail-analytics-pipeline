@@ -1,7 +1,5 @@
 # Retail Analytics Data Pipeline
 
-[![CI](https://github.com/ArnavModi-MSIT/retail-analytics-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/ArnavModi-MSIT/retail-analytics-pipeline/actions/workflows/ci.yml)
-
 A dual-source ETL pipeline that ingests historical CSV bulk data and a live daily API feed, validates every row with PySpark, orchestrates the load with Airflow, and lands both sources in a Postgres star schema for Power BI reporting.
 
 **[Live project page →](https://arnavmodi-msit.github.io/retail-analytics-pipeline/)** &nbsp;·&nbsp; **[Live dashboard →](https://app.powerbi.com/view?r=eyJrIjoiYzZkMTA2MzYtNjEzZi00Y2U3LWE2N2YtNDAwZTcwNmQ4Zjg3IiwidCI6IjNiMjk5M2Q3LTQ5YmYtNGYyOS1iNzk0LWRkNTcyN2Y0NWVlMiJ9)**
